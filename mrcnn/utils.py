@@ -365,24 +365,36 @@ class Dataset(object):
             image = image[..., :3]
         return image
 
-    def load_mask(self, image_id):
-        """Load instance masks for the given image.
+    # def load_mask(self, image_id):
+    #     """Load the specified image and return a [H,W,3] Numpy array.
+    #             """
+    #     # Load binary mask
+    #     info = self.image_info[image_id]
+    #     mask = np.zeros([info['height'], info['width'], len(self.class_names)], dtype=np.uint8)
+    #     label = info['truth']
+    #     labelidx = np.argwhere(CLASS_NAMES == label)
+    #     mask[:, :, labelidx] = skimage.io.imread(info['path'])
+    #     class_ids = np.array([labelidx])
+    #     return mask.astype(np.bool), class_ids.astype(np.int32)
 
-        Different datasets use different ways to store masks. Override this
-        method to load instance masks and return them in the form of am
-        array of binary masks of shape [height, width, instances].
-
-        Returns:
-            masks: A bool array of shape [height, width, instance count] with
-                a binary mask per instance.
-            class_ids: a 1D array of class IDs of the instance masks.
-        """
-        # Override this function to load a mask from your dataset.
-        # Otherwise, it returns an empty mask.
-        logging.warning("You are using the default load_mask(), maybe you need to define your own one.")
-        mask = np.empty([0, 0, 0])
-        class_ids = np.empty([0], np.int32)
-        return mask, class_ids
+    # def load_mask(self, image_id):
+    #     """Load instance masks for the given image.
+    #
+    #     Different datasets use different ways to store masks. Override this
+    #     method to load instance masks and return them in the form of am
+    #     array of binary masks of shape [height, width, instances].
+    #
+    #     Returns:
+    #         masks: A bool array of shape [height, width, instance count] with
+    #             a binary mask per instance.
+    #         class_ids: a 1D array of class IDs of the instance masks.
+    #     """
+    #     # Override this function to load a mask from your dataset.
+    #     # Otherwise, it returns an empty mask.
+    #     logging.warning("You are using the default load_mask(), maybe you need to define your own one.")
+    #     mask = np.empty([0, 0, 0])
+    #     class_ids = np.empty([0], np.int32)
+    #     return mask, class_ids
 
 
 def resize_image(image, min_dim=None, max_dim=None, min_scale=None, mode="square"):
