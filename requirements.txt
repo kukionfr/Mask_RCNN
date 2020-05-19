@@ -9,4 +9,5 @@ keras== 2.2.5
 opencv-python
 h5py
 imgaug
-https://github.com/matterport/Mask_RCNN
+# https://github.com/matterport/Mask_RCNN
+# git+https://github.com/philferriere/cocoapi.git#egg=pycocotools^&subdirectory=PythonAPI

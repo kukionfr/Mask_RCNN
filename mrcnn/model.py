@@ -25,6 +25,7 @@ import keras.engine as KE
 import keras.models as KM
 from mrcnn import utils
 
+
 # Requires TensorFlow 1.3+ and Keras 2.0.8+.
 from distutils.version import LooseVersion
 assert LooseVersion(tf.__version__) >= LooseVersion("1.3")
@@ -1184,7 +1185,7 @@ def mrcnn_mask_loss_graph(target_masks, target_class_ids, pred_masks):
 ############################################################
 
 def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
-                  use_mini_mask=False):
+                  use_mini_mask=False, sixth=False):
     """Load and return ground truth data for an image (image, mask, bounding boxes).
 
     augment: (deprecated. Use augmentation instead). If true, apply random
@@ -1209,17 +1210,20 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
     """
     # Load image and mask
     image = dataset.load_image(image_id)
-
+    masksizes=[]
     mask, class_ids = dataset.load_mask(image_id)
+    masksizes.append(mask.shape[0])
     original_shape = image.shape
+    masksizes.append(image.shape[0])
     image, window, scale, padding, crop = utils.resize_image(
         image,
         min_dim=config.IMAGE_MIN_DIM,
         min_scale=config.IMAGE_MIN_SCALE,
         max_dim=config.IMAGE_MAX_DIM,
         mode=config.IMAGE_RESIZE_MODE)
+    masksizes.append(scale)
     mask = utils.resize_mask(mask, scale, padding, crop)
-
+    masksizes.append(mask.shape[0])
     # Random horizontal flips.
     # TODO: will be removed in a future update in favor of augmentation
     augment = False
@@ -1265,6 +1269,7 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
     # and here is to filter them out
     _idx = np.sum(mask, axis=(0, 1)) > 0
     mask = mask[:, :, _idx]
+    masksizes.append(mask.shape[0])
     class_ids = class_ids[_idx]
     # Bounding boxes. Note that some boxes might be all zeros
     # if the corresponding mask got cropped out.
@@ -1285,7 +1290,8 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
     # Image meta data
     image_meta = compose_image_meta(image_id, original_shape, image.shape,
                                     window, scale, active_class_ids)
-
+    if sixth:
+        return image, image_meta, class_ids, bbox, mask, masksizes
     return image, image_meta, class_ids, bbox, mask
 
 
@@ -2369,7 +2375,6 @@ class MaskRCNN():
             workers = 0
         else:
             workers = multiprocessing.cpu_count()
-
         self.keras_model.fit_generator(
             train_generator,
             initial_epoch=self.epoch,
