@@ -17,20 +17,20 @@ from collections import OrderedDict
 import multiprocessing
 import numpy as np
 import tensorflow as tf
+
 import keras
 import keras.backend as K
 import keras.layers as KL
 import keras.engine as KE
 import keras.models as KM
-
 from mrcnn import utils
 
 # Requires TensorFlow 1.3+ and Keras 2.0.8+.
 from distutils.version import LooseVersion
 assert LooseVersion(tf.__version__) >= LooseVersion("1.3")
 assert LooseVersion(keras.__version__) >= LooseVersion('2.0.8')
-print('keras version',keras.__version__)
-
+print('keras version', keras.__version__)
+print('tf version', tf.__version__)
 ############################################################
 #  Utility Functions
 ############################################################
@@ -1209,6 +1209,7 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
     """
     # Load image and mask
     image = dataset.load_image(image_id)
+
     mask, class_ids = dataset.load_mask(image_id)
     original_shape = image.shape
     image, window, scale, padding, crop = utils.resize_image(
@@ -1221,6 +1222,8 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
 
     # Random horizontal flips.
     # TODO: will be removed in a future update in favor of augmentation
+    augment = False
+    augmentation = False
     if augment:
         logging.warning("'augment' is deprecated. Use 'augmentation' instead.")
         if random.randint(0, 1):
@@ -1829,6 +1832,7 @@ class MaskRCNN():
         config: A Sub-class of the Config class
         model_dir: Directory to save training logs and trained weights
         """
+
         assert mode in ['training', 'inference']
         self.mode = mode
         self.config = config
@@ -1852,11 +1856,15 @@ class MaskRCNN():
                             "For example, use 256, 320, 384, 448, 512, ... etc. ")
 
         # Inputs
+        print('keras version', keras.__version__)
+        print('tf version', tf.__version__)
         input_image = KL.Input(
             shape=[None, None, config.IMAGE_SHAPE[2]], name="input_image")
         input_image_meta = KL.Input(shape=[config.IMAGE_META_SIZE],
                                     name="input_image_meta")
         if mode == "training":
+            print('keras version', keras.__version__)
+            print('tf version', tf.__version__)
             # RPN GT
             input_rpn_match = KL.Input(
                 shape=[None, 1], name="input_rpn_match", dtype=tf.int32)

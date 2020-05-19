@@ -202,10 +202,13 @@ class NucleusDataset(utils.Dataset):
         assert subset in ["train", "val", "stage1_train", "stage1_test", "stage2_test"]
         subset_dir = "stage1_train" if subset in ["train", "val"] else subset
         dataset_dir = os.path.join(dataset_dir, subset_dir)
+        print(dataset_dir)
         if subset == "val":
             image_ids = VAL_IMAGE_IDS
+            print(dataset_dir)
         else:
             # Get image ids from directory names
+            print(dataset_dir)
             image_ids = next(os.walk(dataset_dir))[1]
             if subset == "train":
                 image_ids = list(set(image_ids) - set(VAL_IMAGE_IDS))
