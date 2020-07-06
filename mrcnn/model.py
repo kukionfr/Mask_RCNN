@@ -1226,8 +1226,8 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
     masksizes.append(mask.shape[0])
     # Random horizontal flips.
     # TODO: will be removed in a future update in favor of augmentation
-    augment = False
-    augmentation = False
+    # augment = False
+    # augmentation = False
     if augment:
         logging.warning("'augment' is deprecated. Use 'augmentation' instead.")
         if random.randint(0, 1):

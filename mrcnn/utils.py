@@ -15,6 +15,7 @@ import random
 import numpy as np
 import tensorflow as tf
 import scipy
+import cv2
 import skimage.color
 import skimage.io
 import skimage.transform
@@ -913,6 +914,7 @@ def resize(image, output_shape, order=1, mode='constant', cval=0, clip=True,
             order=order, mode=mode, cval=cval, clip=clip,
             preserve_range=preserve_range, anti_aliasing=anti_aliasing,
             anti_aliasing_sigma=anti_aliasing_sigma)
+        # cv2.resize(image, output_shape)
     else:
         return skimage.transform.resize(
             image, output_shape,
