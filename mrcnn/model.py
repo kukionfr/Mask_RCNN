@@ -18,6 +18,13 @@ import multiprocessing
 import numpy as np
 import tensorflow as tf
 
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+config.log_device_placement = True
+sess = tf.Session(config=config)
+set_session(sess)
+
 import keras
 import keras.backend as K
 import keras.layers as KL
